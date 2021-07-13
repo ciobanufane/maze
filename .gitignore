@@ -3,3 +3,5 @@ debug/
 release/
 .qmake.stash
 test
+maze.pro.user
+
