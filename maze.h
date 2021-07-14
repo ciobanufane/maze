@@ -45,8 +45,8 @@ public:
 
 private:
 
-    bool validIndex1D(int index1D) const;
-    bool validPoint(Point point) const;
+    void isValidIndex1D(int index1D) const;
+    void isValidPoint(Point point) const;
 
     int m_rows;
     int m_columns;

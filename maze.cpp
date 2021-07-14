@@ -1,4 +1,5 @@
 #include "maze.h"
+#include <stdexcept>
 
 Maze::Maze(int rows, int columns)
     : m_rows(rows), m_columns(columns)
@@ -23,9 +24,7 @@ int Maze::position(Point currentPoint) const
 
 int Maze::position(int index1D) const
 {
-    if (!validIndex1D(index1D))
-        return -1;
-
+    isValidIndex1D(index1D);
     return m_maze[index1D];
 }
 
@@ -36,17 +35,16 @@ bool Maze::setPart(Point currentPoint, int part)
 
 bool Maze::setPart(int index1D, int part)
 {
-    if (!validIndex1D(index1D))
-        return false;
-
+    isValidIndex1D(index1D);
     m_maze[index1D] = part;
     return true;
 }
 
 int Maze::getCost(Point currentPoint, Point neighborPoint) const
 {
-    if (!validPoint(currentPoint) || !validPoint(neighborPoint))
-        return -1;
+
+    isValidPoint(currentPoint);
+    isValidPoint(neighborPoint);
 
     int length = 0;
     int diffRow = (neighborPoint.row - currentPoint.row);
@@ -63,8 +61,10 @@ int Maze::getCost(int current1D, int neighbor1D) const
 
 std::vector<Point> Maze::getNeighbors(Point currentPoint) const
 {
-    if (!validPoint(currentPoint) ||
-            m_maze[pointToIndex1D(currentPoint)] == Maze::WALL)
+
+    isValidPoint(currentPoint);
+
+    if (m_maze[pointToIndex1D(currentPoint)] == Maze::WALL)
         return std::vector<Point>();
 
     std::vector<Point> neighbors;
@@ -90,7 +90,10 @@ std::vector<Point> Maze::getNeighbors(Point currentPoint) const
 
 std::vector<int> Maze::getNeighbors(int current1D) const
 {
-    if (!validIndex1D(current1D) || m_maze[current1D] == Maze::WALL)
+
+    isValidIndex1D(current1D);
+
+    if (m_maze[current1D] == Maze::WALL)
         return std::vector<int>();
 
     std::vector<int> neighbors;
@@ -102,19 +105,16 @@ std::vector<int> Maze::getNeighbors(int current1D) const
     return neighbors;
 }
 
-bool Maze::validIndex1D(int index1D) const
+void Maze::isValidIndex1D(int index1D) const
 {
     if (index1D >= 0 && index1D < m_rows*m_columns)
-        return true;
-    return false;
+        return;
+    throw std::out_of_range("invalid index: " + std::to_string(index1D));
 }
 
-bool Maze::validPoint(Point point) const
+void Maze::isValidPoint(Point point) const
 {
-    if (point.row >= 0 && point.row < m_rows &&
-            point.column >= 0 && point.column < m_columns)
-        return true;
-    return false;
+    isValidIndex1D(pointToIndex1D(point));
 }
 
 Point Maze::index1DToPoint(int index1D) const
