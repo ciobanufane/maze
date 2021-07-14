@@ -3,10 +3,9 @@
 
 #include <vector>
 #include <map>
-#include "priority_queue.h"
 
-class Maze;
-using path = std::vector<int>;
+#include "maze.h"
+#include "priority_queue.h"
 
 struct AStarCombo
 {
@@ -30,9 +29,15 @@ public:
         FINISHED
     };
 
+    enum ASTAR_PART
+    {
+        CURRENT_PATH = Maze::LAST_PART+1,
+        VISITED,
+    };
+
     void setStart(int start);
     void setGoal(int goal);
-    path getCurrentPath() const;
+    std::vector<int> getCurrentPath() const;
     int calculate();
 private:
     int getHeuristic(int current, int goal) const;

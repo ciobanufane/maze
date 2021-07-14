@@ -1,5 +1,4 @@
 #include "astar.h"
-#include "maze.h"
 
 AStar::AStar(Maze* maze, int start, int goal)
     : m_start(start), m_goal(goal), m_maze(maze)
@@ -36,9 +35,9 @@ int AStar::getHeuristic(int current, int goal) const
     return length;
 }
 
-path AStar::getCurrentPath() const
+std::vector<int> AStar::getCurrentPath() const
 {
-    path resultPath;
+    std::vector<int> resultPath;
     resultPath.push_back(m_current.index);
 
     auto result = cameFrom.find(m_current.index);

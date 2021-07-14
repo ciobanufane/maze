@@ -22,7 +22,7 @@ class Maze
 public:
     Maze(int rows, int columns);
 
-    enum Part {EMPTY = 0, WALL = 1, ASTAR = 2, ASTAR_VISITED = 3};
+    enum Part {EMPTY = 0, WALL = 1, LAST_PART = 128};
 
     int rows() const;
     int columns() const;

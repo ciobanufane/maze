@@ -106,6 +106,7 @@ std::vector<int> Maze::getNeighbors(int current1D) const
 
     if (current1D-m_columns >= 0 && m_maze[current1D-m_columns] != Maze::WALL)
         neighbors.push_back(current1D-m_columns);
+
     return neighbors;
 }
 
