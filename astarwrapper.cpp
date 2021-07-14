@@ -16,26 +16,25 @@ void AStarWrapper::setPathAndCalculate()
     case AStar::FINISHED:
         for (int i : lastPath) {
             Point p = maze->index1DToPoint(i);
-            mazeModel->setData(mazeModel->index(p.row, p.column), 3);
+            mazeModel->setData(mazeModel->index(p.row, p.column), AStar::VISITED);
         }
         lastPath = astar->getCurrentPath();
         for(int i : lastPath) {
             Point p = maze->index1DToPoint(i);
-            mazeModel->setData(mazeModel->index(p.row, p.column), 2);
+            mazeModel->setData(mazeModel->index(p.row, p.column), AStar::CURRENT_PATH);
         }
         emit finishCalculate();
         break;
     case AStar::CONTINUE:
         for (int i : lastPath) {
             Point p = maze->index1DToPoint(i);
-            mazeModel->setData(mazeModel->index(p.row, p.column), 3);
+            mazeModel->setData(mazeModel->index(p.row, p.column), AStar::VISITED);
         }
         lastPath = astar->getCurrentPath();
         for (int i : lastPath) {
             Point p = maze->index1DToPoint(i);
-            mazeModel->setData(mazeModel->index(p.row, p.column), 2);
+            mazeModel->setData(mazeModel->index(p.row, p.column), AStar::CURRENT_PATH);
         }
-        lastPath = astar->getCurrentPath();
         emit continueCalculate();
         break;
     case AStar::NO_PATH:
