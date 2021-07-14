@@ -1,5 +1,6 @@
 #include "mazedelegate.h"
 #include "maze.h"
+#include "astar.h"
 
 #include <QPainter>
 #include <QEvent>
@@ -10,6 +11,10 @@
 MazeDelegate::MazeDelegate(QObject *parent)
     : QAbstractItemDelegate(parent), row(0), col(0)
 {
+    colorMap.insert({Maze::EMPTY, Qt::white});
+    colorMap.insert({Maze::WALL, Qt::gray});
+    colorMap.insert({AStar::CURRENT_PATH, Qt::red});
+    colorMap.insert({AStar::VISITED, Qt::green});
 }
 
 void MazeDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
@@ -22,20 +27,7 @@ void MazeDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, 
         return;
 
     painter->save();
-    switch(value) {
-    case Maze::EMPTY:
-        painter->fillRect(option.rect, Qt::white);
-        break;
-    case Maze::WALL:
-        painter->fillRect(option.rect, Qt::gray);
-        break;
-    case Maze::ASTAR:
-        painter->fillRect(option.rect, Qt::red);
-        break;
-    case Maze::ASTAR_VISITED:
-        painter->fillRect(option.rect, Qt::green);
-        break;
-    }
+    painter->fillRect(option.rect, colorMap.at(value));
     painter->restore();
 
     painter->drawRect(option.rect);
@@ -51,13 +43,13 @@ bool MazeDelegate::editorEvent(QEvent* event, QAbstractItemModel* model, const Q
 {
     switch (event->type()) {
     case QEvent::MouseButtonPress:
-        if (model->data(index, Qt::DisplayRole) != Maze::ASTAR)
+        if (model->data(index, Qt::DisplayRole) != AStar::CURRENT_PATH)
             model->setData(index, Maze::WALL);
         return true;
     case QEvent::MouseMove:
     {
         QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);
-        if (mouseEvent->buttons() & Qt::LeftButton && model->data(index, Qt::DisplayRole) != Maze::ASTAR)
+        if (mouseEvent->buttons() & Qt::LeftButton && model->data(index, Qt::DisplayRole) != AStar::CURRENT_PATH)
             model->setData(index, Maze::WALL);
         return true;
     }

@@ -2,6 +2,7 @@
 #define MAZEDELEGATE_H
 
 #include <QAbstractItemDelegate>
+#include <map>
 
 class MazeDelegate : public QAbstractItemDelegate
 {
@@ -16,6 +17,7 @@ private slots:
 private:
     int row;
     int col;
+    std::map<int, Qt::GlobalColor> colorMap;
 };
 
 #endif // MAZEDELEGATE_H
