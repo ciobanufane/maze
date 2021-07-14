@@ -94,18 +94,10 @@ std::vector<int> Maze::getNeighbors(int current1D) const
         return std::vector<int>();
 
     std::vector<int> neighbors;
+    std::vector<Point> temp = getNeighbors(index1DToPoint(current1D));
 
-    if (current1D % m_columns != 0 && m_maze[current1D-1] != Maze::WALL)
-        neighbors.push_back(current1D-1);
-
-    if ((current1D+1) % m_columns != 0 && m_maze[current1D+1] != Maze::WALL)
-        neighbors.push_back(current1D+1);
-
-    if (current1D+m_columns < m_rows*m_columns && m_maze[current1D+m_columns] != Maze::WALL)
-        neighbors.push_back(current1D+m_columns);
-
-    if (current1D-m_columns >= 0 && m_maze[current1D-m_columns] != Maze::WALL)
-        neighbors.push_back(current1D-m_columns);
+    for (auto it = temp.begin(); it != temp.end(); ++it)
+        neighbors.push_back(pointToIndex1D(*it));
 
     return neighbors;
 }

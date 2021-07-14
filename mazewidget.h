@@ -14,7 +14,6 @@ class MazeWidget : public QWidget
 public:
     MazeWidget(int rows, int cols, QWidget* parent = nullptr);
     virtual ~MazeWidget() {};
-    //QSize sizeHint() const;
 protected:
     void paintEvent(QPaintEvent* event) override;
 

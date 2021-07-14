@@ -31,7 +31,6 @@ void MazeDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, 
     painter->restore();
 
     painter->drawRect(option.rect);
-
 }
 
 QSize MazeDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& /* index */) const
