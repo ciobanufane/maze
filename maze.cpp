@@ -1,5 +1,9 @@
 #include "maze.h"
+
 #include <stdexcept>
+#include <cmath>
+#include <chrono>
+#include <random>
 
 Maze::Maze(int rows, int columns)
     : m_rows(rows), m_columns(columns)
@@ -129,8 +133,46 @@ int Maze::pointToIndex1D(Point point) const
     return point.row*m_columns+point.column;
 }
 
-bool Maze::generateWalls()
+
+void Maze::generateWalls(int x1, int y1, int x2, int y2, int orientation)
 {
-    std::queue<Point> q;
-    return true;
+    static std::random_device rd;
+    static std::mt19937 gen{ rd() ^ (
+    (std::mt19937::result_type)std::chrono::system_clock::now().time_since_epoch().count() +
+    (std::mt19937::result_type)std::chrono::high_resolution_clock::now().time_since_epoch().count()) };
+
+    if (x2-x1 <= 1 || y2-y1 <= 1)
+        return;
+
+    if (orientation == 0) { // vertical
+        // find number x3 between x1 and x2
+        std::uniform_int_distribution<> vertical(y1+1,y2-1);
+        int y3 = vertical(gen);
+        // for i in rows, set {i,x3} to WALL
+        for (int i = x1; i <= x2; ++i)
+            setPart({i,y3}, Maze::WALL);
+        // find number y3 between y1 and y2
+        std::uniform_int_distribution<> passage(x1,x2);
+        int x3 = passage(gen);
+        // set {y3,x3} to EMPTY
+        setPart({x3,y3}, Maze::EMPTY);
+        // recurse horizontal on two sub rectangles (maybe four?)
+        generateWalls(x1,y3+1,x3,y2,1);
+        generateWalls(x1,y1,x3,y3-1,1);
+        generateWalls(x3,y1,x2,y3-1,1);
+        generateWalls(x3,y3+1,x2,y2,1);
+    } else { // horizontal
+        std::uniform_int_distribution<> horizontal(x1+1,x2-1);
+        int x3 = horizontal(gen);
+        for (int i = y1; i <= y2; ++i)
+            setPart({x3,i}, Maze::WALL);
+        std::uniform_int_distribution<> passage(y1,y2);
+        int y3 = passage(gen);
+        setPart({x3,y3}, Maze::EMPTY);
+        generateWalls(x1,y3,x3-1,y2,0);
+        generateWalls(x1,y1,x3-1,y3,0);
+        generateWalls(x3+1,y1,x2,y3,0);
+        generateWalls(x3+1,y3,x2,y2,0);
+    }
+
 }

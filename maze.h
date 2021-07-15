@@ -2,19 +2,13 @@
 #define MAZE_H
 
 #include <vector>
-#include <queue>
 #include <algorithm>
+#include <random>
 
 struct Point
 {
     int row;
     int column;
-};
-
-struct Rect
-{
-    Point topLeft;
-    Point bottomRight;
 };
 
 class Maze
@@ -40,8 +34,7 @@ public:
 
     Point index1DToPoint(int index1D) const;
     int pointToIndex1D(Point point) const;
-
-    bool generateWalls();
+    void generateWalls(int x1, int y1, int x2, int y2, int orientation);
 
 private:
 

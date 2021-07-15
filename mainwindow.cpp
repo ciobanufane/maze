@@ -47,6 +47,8 @@ MainWindow::MainWindow(QWidget *parent)
     setCentralWidget(view);
     setFixedSize(size);
 
+    maze->generateWalls(0,0,maze->rows()-1, maze->columns()-1, 0);
+
     QTimer* timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, [this]{asw->setPathAndCalculate();});
     connect(asw, SIGNAL(finishCalculate()), timer, SLOT(stop()));
@@ -58,5 +60,6 @@ MainWindow::~MainWindow()
 {
     delete maze;
     delete astar;
+    delete asw;
 }
 
