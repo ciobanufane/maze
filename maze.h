@@ -5,11 +5,7 @@
 #include <algorithm>
 #include <random>
 
-struct Point
-{
-    int row;
-    int column;
-};
+#include "point.h"
 
 class Maze
 {
@@ -34,7 +30,6 @@ public:
 
     Point index1DToPoint(int index1D) const;
     int pointToIndex1D(Point point) const;
-    void generateWalls(int x1, int y1, int x2, int y2, int orientation);
 
 private:
 

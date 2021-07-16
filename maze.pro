@@ -23,7 +23,9 @@ HEADERS += astar.h \
            mazedelegate.h \
            mazemodel.h \
            mazewidget.h \
-           priority_queue.h
+           point.h \
+           priority_queue.h \
+           wallgenerator.h
 SOURCES += astar.cpp \
            astarwrapper.cpp \
            main.cpp \
@@ -31,4 +33,5 @@ SOURCES += astar.cpp \
            maze.cpp \
            mazedelegate.cpp \
            mazemodel.cpp \
-           mazewidget.cpp
+           mazewidget.cpp \
+           wallgenerator.cpp

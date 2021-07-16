@@ -23,7 +23,6 @@ public:
 private:
     Maze* maze;
     AStar* astar;
-    std::vector<int> lastPath;
 };
 
 #endif // MAZEMODEL_H

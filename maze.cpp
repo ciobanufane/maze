@@ -51,8 +51,8 @@ int Maze::getCost(Point currentPoint, Point neighborPoint) const
     isValidPoint(neighborPoint);
 
     int length = 0;
-    int diffRow = (neighborPoint.row - currentPoint.row);
-    int diffColumn = (neighborPoint.column - currentPoint.column);
+    int diffRow = (neighborPoint.x - currentPoint.x);
+    int diffColumn = (neighborPoint.y - currentPoint.y);
     length += diffRow >= 0 ? diffRow : -1*diffRow;
     length += diffColumn >= 0 ? diffColumn : -1*diffColumn;
     return length;
@@ -73,21 +73,21 @@ std::vector<Point> Maze::getNeighbors(Point currentPoint) const
 
     std::vector<Point> neighbors;
 
-    int index = pointToIndex1D({currentPoint.row, currentPoint.column-1});
-    if (currentPoint.column-1 >= 0 && m_maze[index] != Maze::WALL)
-        neighbors.push_back({currentPoint.row, currentPoint.column-1});
+    int index = pointToIndex1D({currentPoint.x, currentPoint.y-1});
+    if (currentPoint.y-1 >= 0 && m_maze[index] != Maze::WALL)
+        neighbors.push_back({currentPoint.x, currentPoint.y-1});
 
-    index = pointToIndex1D({currentPoint.row, currentPoint.column+1});
-    if (currentPoint.column+1 != m_columns && m_maze[index] != Maze::WALL)
-        neighbors.push_back({currentPoint.row, currentPoint.column+1});
+    index = pointToIndex1D({currentPoint.x, currentPoint.y+1});
+    if (currentPoint.y+1 != m_columns && m_maze[index] != Maze::WALL)
+        neighbors.push_back({currentPoint.x, currentPoint.y+1});
 
-    index = pointToIndex1D({currentPoint.row-1, currentPoint.column});
-    if (currentPoint.row-1 >= 0 && m_maze[index] != Maze::WALL)
-        neighbors.push_back({currentPoint.row-1, currentPoint.column});
+    index = pointToIndex1D({currentPoint.x-1, currentPoint.y});
+    if (currentPoint.x-1 >= 0 && m_maze[index] != Maze::WALL)
+        neighbors.push_back({currentPoint.x-1, currentPoint.y});
 
-    index = pointToIndex1D({currentPoint.row+1, currentPoint.column});
-    if (currentPoint.row+1 != m_rows && m_maze[index] != Maze::WALL)
-        neighbors.push_back({currentPoint.row+1, currentPoint.column});
+    index = pointToIndex1D({currentPoint.x+1, currentPoint.y});
+    if (currentPoint.x+1 != m_rows && m_maze[index] != Maze::WALL)
+        neighbors.push_back({currentPoint.x+1, currentPoint.y});
 
     return neighbors;
 }
@@ -130,49 +130,6 @@ Point Maze::index1DToPoint(int index1D) const
 
 int Maze::pointToIndex1D(Point point) const
 {
-    return point.row*m_columns+point.column;
+    return point.x*m_columns+point.y;
 }
 
-
-void Maze::generateWalls(int x1, int y1, int x2, int y2, int orientation)
-{
-    static std::random_device rd;
-    static std::mt19937 gen{ rd() ^ (
-    (std::mt19937::result_type)std::chrono::system_clock::now().time_since_epoch().count() +
-    (std::mt19937::result_type)std::chrono::high_resolution_clock::now().time_since_epoch().count()) };
-
-    if (x2-x1 <= 1 || y2-y1 <= 1)
-        return;
-
-    if (orientation == 0) { // vertical
-        // find number x3 between x1 and x2
-        std::uniform_int_distribution<> vertical(y1+1,y2-1);
-        int y3 = vertical(gen);
-        // for i in rows, set {i,x3} to WALL
-        for (int i = x1; i <= x2; ++i)
-            setPart({i,y3}, Maze::WALL);
-        // find number y3 between y1 and y2
-        std::uniform_int_distribution<> passage(x1,x2);
-        int x3 = passage(gen);
-        // set {y3,x3} to EMPTY
-        setPart({x3,y3}, Maze::EMPTY);
-        // recurse horizontal on two sub rectangles (maybe four?)
-        generateWalls(x1,y3+1,x3,y2,1);
-        generateWalls(x1,y1,x3,y3-1,1);
-        generateWalls(x3,y1,x2,y3-1,1);
-        generateWalls(x3,y3+1,x2,y2,1);
-    } else { // horizontal
-        std::uniform_int_distribution<> horizontal(x1+1,x2-1);
-        int x3 = horizontal(gen);
-        for (int i = y1; i <= y2; ++i)
-            setPart({x3,i}, Maze::WALL);
-        std::uniform_int_distribution<> passage(y1,y2);
-        int y3 = passage(gen);
-        setPart({x3,y3}, Maze::EMPTY);
-        generateWalls(x1,y3,x3-1,y2,0);
-        generateWalls(x1,y1,x3-1,y3,0);
-        generateWalls(x3+1,y1,x2,y3,0);
-        generateWalls(x3+1,y3,x2,y2,0);
-    }
-
-}

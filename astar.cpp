@@ -2,7 +2,7 @@
 
 AStar::AStar(Maze* maze, int start, int goal)
     : m_start(start), m_goal(goal), m_maze(maze)
-{
+{   
     prio = PrioQueue<AStarCombo>();
     prio.add({start, getHeuristic(start, goal)});
 
@@ -24,7 +24,6 @@ int AStar::getHeuristic(int current, int goal) const
 {
     // current  = x1 * columns() + y1
     // goal     = x2 * columns() + y2
-
     int length = 0;
     // difference in columns
     length += (goal-current) % m_maze->columns();
@@ -35,14 +34,14 @@ int AStar::getHeuristic(int current, int goal) const
     return length;
 }
 
-std::vector<int> AStar::getCurrentPath() const
+std::vector<Point> AStar::getCurrentPath() const
 {
-    std::vector<int> resultPath;
-    resultPath.push_back(m_current.index);
+    std::vector<Point> resultPath;
+    resultPath.push_back(m_maze->index1DToPoint(m_current.index));
 
     auto result = cameFrom.find(m_current.index);
     while (result != cameFrom.end()) {
-        resultPath.push_back(result->second);
+        resultPath.push_back(m_maze->index1DToPoint(result->second));
         result = cameFrom.find(result->second);
     }
 

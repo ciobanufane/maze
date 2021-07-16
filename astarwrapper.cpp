@@ -3,42 +3,37 @@
 #include "maze.h"
 #include "mazemodel.h"
 
-AStarWrapper::AStarWrapper(AStar* astar, Maze* maze, MazeModel* mazeModel, QObject *parent)
-    : QObject(parent), astar(astar), maze(maze), mazeModel(mazeModel)
+AStarWrapper::AStarWrapper(AStar* astar, MazeModel* mazeModel, QObject *parent)
+    : QObject(parent), m_astar(astar), m_mazeModel(mazeModel)
 {
 
 }
 
 void AStarWrapper::setPathAndCalculate()
 {
-    int result = astar->calculate();
+    int result = m_astar->calculate();
     switch (result) {
     case AStar::FINISHED:
-        for (int i : lastPath) {
-            Point p = maze->index1DToPoint(i);
-            mazeModel->setData(mazeModel->index(p.row, p.column), AStar::VISITED);
-        }
-        lastPath = astar->getCurrentPath();
-        for(int i : lastPath) {
-            Point p = maze->index1DToPoint(i);
-            mazeModel->setData(mazeModel->index(p.row, p.column), AStar::CURRENT_PATH);
-        }
+        setLastPathToModel(AStar::VISITED);
+        m_lastPath = m_astar->getCurrentPath();
+        setLastPathToModel(AStar::CURRENT_PATH);
         emit finishCalculate();
         break;
     case AStar::CONTINUE:
-        for (int i : lastPath) {
-            Point p = maze->index1DToPoint(i);
-            mazeModel->setData(mazeModel->index(p.row, p.column), AStar::VISITED);
-        }
-        lastPath = astar->getCurrentPath();
-        for (int i : lastPath) {
-            Point p = maze->index1DToPoint(i);
-            mazeModel->setData(mazeModel->index(p.row, p.column), AStar::CURRENT_PATH);
-        }
+        setLastPathToModel(AStar::VISITED);
+        m_lastPath = m_astar->getCurrentPath();
+        setLastPathToModel(AStar::CURRENT_PATH);
         emit continueCalculate();
         break;
     case AStar::NO_PATH:
         emit noPathCalculate();
         break;
+    }
+}
+
+void AStarWrapper::setLastPathToModel(int value)
+{
+    for (Point p : m_lastPath) {
+        m_mazeModel->setData(m_mazeModel->index(p.x, p.y), value);
     }
 }

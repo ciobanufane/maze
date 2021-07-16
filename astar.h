@@ -4,6 +4,7 @@
 #include <vector>
 #include <map>
 
+#include "point.h"
 #include "maze.h"
 #include "priority_queue.h"
 
@@ -37,7 +38,7 @@ public:
 
     void setStart(int start);
     void setGoal(int goal);
-    std::vector<int> getCurrentPath() const;
+    std::vector<Point> getCurrentPath() const;
     int calculate();
 private:
     int getHeuristic(int current, int goal) const;
