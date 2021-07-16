@@ -5,6 +5,7 @@
 
 class AStar;
 class AStarWrapper;
+class WallGenerator;
 class Maze;
 class MazeModel;
 class MazeDelegate;
@@ -20,6 +21,7 @@ private:
     Maze* maze;
     AStar* astar;
     AStarWrapper* asw;
+    WallGenerator* wallgen;
     MazeModel* model;
     QTableView* view;
 };
